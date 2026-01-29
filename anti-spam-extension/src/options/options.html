@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Anti Spam Options</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main class="container">
+      <h1>Anti Spam Settings</h1>
+
+      <form id="settings-form">
+        <label for="serverUrl">Central server URL</label>
+        <input id="serverUrl" type="url" placeholder="https://example-server.com/api" />
+
+        <label>
+          <input id="autoSend" type="checkbox" />
+          Auto-send complaints when suspicious URLs are detected
+        </label>
+
+        <div class="actions">
+          <button id="save-btn" type="button">Save</button>
+        </div>
+      </form>
+
+      <p class="note">Note: JavaScript will read/write these settings via chrome.storage.</p>
+    </main>
+    <script src="options.js"></script>
+  </body>
+  </html>

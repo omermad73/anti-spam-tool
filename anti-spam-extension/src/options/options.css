@@ -1,0 +1,9 @@
+/* Options page styling stub for Anti Spam */
+body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 16px; }
+.container { max-width: 640px; }
+label { display: block; margin-top: 12px; }
+input[type="url"] { width: 100%; padding: 8px; margin-top: 6px; }
+.actions { margin-top: 12px; }
+#save-btn { padding: 8px 12px; }
+
+/* TODO: Improve layout and add validation styles */

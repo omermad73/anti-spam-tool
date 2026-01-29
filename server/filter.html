@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email List Filter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .upload-section {
+            margin-bottom: 30px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .file-input-label:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .file-name {
+            margin-left: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-filter {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-filter:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-filter:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .results-section.show {
+            display: block;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .results-header h2 {
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .btn-download {
+            background: #51cf66;
+            color: white;
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .btn-download:hover {
+            background: #40c057;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(81, 207, 102, 0.3);
+        }
+        
+        .results-stats {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .results-stats span {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            background: #f9f9f9;
+            resize: vertical;
+            color: #333;
+        }
+        
+        .error {
+            background: #ffe0e0;
+            border-left: 4px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 5px;
+            color: #d63031;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Email List Filter</h1>
+        <p class="subtitle">Filter out existing members from your email list</p>
+        
+        <div class="info-box">
+            Upload a JSON file containing an array of email addresses. The tool will remove any emails that are already registered members. Removing all of our members from your list will stop all complaints.
+        </div>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="upload-section">
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" accept=".json" />
+                <label for="fileInput" class="file-input-label">Choose JSON File</label>
+                <span class="file-name" id="fileName">No file selected</span>
+            </div>
+            
+            <div>
+                <button class="btn-filter" id="filterBtn" disabled>Filter Email List</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <p>Processing... Please wait</p>
+        </div>
+        
+        <div class="results-section" id="results">
+            <div class="results-header">
+                <h2>Filtered Results</h2>
+                <button class="btn-download" id="downloadBtn">Download JSON</button>
+            </div>
+            
+            <textarea id="resultsText" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        let filteredEmails = [];
+        let originalEmails = [];
+        
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const filterBtn = document.getElementById('filterBtn');
+        const resultsSection = document.getElementById('results');
+        const resultsText = document.getElementById('resultsText');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const errorBox = document.getElementById('error');
+        const loading = document.getElementById('loading');
+        
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+                filterBtn.disabled = false;
+                errorBox.classList.remove('show');
+            } else {
+                fileName.textContent = 'No file selected';
+                filterBtn.disabled = true;
+            }
+        });
+        
+        filterBtn.addEventListener('click', async function() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            try {
+                errorBox.classList.remove('show');
+                loading.classList.add('show');
+                resultsSection.classList.remove('show');
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const response = await fetch('/filter-emails', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Server returned error: ' + response.status);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                
+                originalEmails = data.original || [];
+                filteredEmails = data.filtered || [];
+                
+                resultsText.value = JSON.stringify(filteredEmails, null, 2);
+                resultsSection.classList.add('show');
+                
+            } catch (err) {
+                errorBox.textContent = 'Error: ' + err.message;
+                errorBox.classList.add('show');
+            } finally {
+                loading.classList.remove('show');
+            }
+        });
+        
+        downloadBtn.addEventListener('click', function() {
+            const blob = new Blob([JSON.stringify(filteredEmails, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'filtered_emails.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

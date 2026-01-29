@@ -1,0 +1,8 @@
+Dear Valued Customer,
+
+Congratulations! You have been selected as a WINNER in our exclusive promotion!
+
+Click here to claim your prize: http://localhost:8787/complaint
+
+Best regards,
+The National Lottery Company

@@ -1,0 +1,23 @@
+/* Popup styling stub for Anti Spam */
+/* Add and refine styles for the popup UI here */
+body {
+  font-family: system-ui, Arial, sans-serif;
+  margin: 0;
+  padding: 12px;
+  width: 300px;
+}
+.container h1 {
+  font-size: 16px;
+  margin: 0 0 8px 0;
+}
+.muted {
+  color: #666;
+}
+.actions {
+  margin-top: 12px;
+}
+#send-complaint {
+  padding: 8px 12px;
+}
+
+/* TODO: style status badges, links, and error states here */
